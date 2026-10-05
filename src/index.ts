@@ -139,6 +139,10 @@ const ProfileSchema = z
             user_api_client_id: z.string().optional(),
             http_basic_user: z.string().optional(),
             http_basic_pass: z.string().optional(),
+            cookie: z.string().optional(),
+            cookie_file: z.string().optional(),
+            http_profile: z.enum(["stdlib"]).optional(),
+            extra_headers: z.record(z.string()).optional(),
           })
           .strict()
       )

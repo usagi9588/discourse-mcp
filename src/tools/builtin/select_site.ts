@@ -2,6 +2,7 @@ import { z } from "zod";
 import { defineTool } from "../definition.js";
 import { tryRegisterRemoteTools } from "../remote/tool_exec_api.js";
 import { jsonResponse, jsonError } from "../../util/json_response.js";
+import { wafCookieExpiredDetails } from "../../util/waf.js";
 
 const schema = z.object({
   site: z.string().url().describe("Base URL of the Discourse site"),
@@ -27,7 +28,10 @@ export const selectSiteTool = defineTool({
 
       return jsonResponse({ site: base, title });
     } catch (e: any) {
-      return jsonError(`Failed to select site: ${e?.message || String(e)}`);
+      return jsonError(
+        `Failed to select site: ${e?.message || String(e)}`,
+        wafCookieExpiredDetails(e, ctx.siteState.hasCookieAuth(site)),
+      );
     }
   },
 });

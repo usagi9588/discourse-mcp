@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { defineTool } from "../definition.js";
 import { jsonResponse, jsonError, zodError } from "../../util/json_response.js";
+import { wafCookieExpiredDetails } from "../../util/waf.js";
 
 import { readAnnotations } from "./common/helpers.js";
 
@@ -125,7 +126,10 @@ export const filterTopicsTool = defineTool({
       if (total !== undefined) meta.total = total;
       return jsonResponse({ results, meta });
     } catch (e: any) {
-      return jsonError(`Failed to discover topics: ${e?.message || String(e)}`);
+      return jsonError(
+        `Failed to discover topics: ${e?.message || String(e)}`,
+        wafCookieExpiredDetails(e, ctx.siteState.hasCookieAuth()),
+      );
     }
   },
 });

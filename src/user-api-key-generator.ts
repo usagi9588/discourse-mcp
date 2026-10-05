@@ -118,7 +118,7 @@ export async function supportsDeviceAuthorization(
   fetchImpl: Fetch = fetch
 ): Promise<boolean> {
   const response = await fetchImpl(siteUrl(site, "/user-api-key/new"), { method: "HEAD" });
-  if (response.status === 404 || response.status === 405) return false;
+  if (response.status === 403 || response.status === 404 || response.status === 405) return false;
   if (!response.ok) throw await responseError(response);
   return response.headers.get(DEVICE_AUTH_HEADER)?.toLowerCase() === "true";
 }
